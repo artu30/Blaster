@@ -27,10 +27,10 @@ protected:
 	void LookUp(float Value);
 	
 private:
-	UPROPERTY(VisibleAnywhere, Category=Camera)
+	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent*CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, Category=Camera)
+	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* FollowCamera;
 	
 public:
