@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
+class UWidgetComponent;
 class USphereComponent;
 
 UENUM(BlueprintType)
@@ -26,8 +27,16 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	void ShowPickupWidget(bool bShowWidget);
+
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtehrBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtehrBodyIndex);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
@@ -36,7 +45,13 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
 	USphereComponent* AreaSphere;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
 	EWeaponState WeaponState;
+
+	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
+	UWidgetComponent* PickupWidget;
+
+public:
+	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }
 	
 };
