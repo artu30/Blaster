@@ -14,7 +14,7 @@ enum class EWeaponState : uint8
 	EWS_Equipped UMETA(DisplayName = "Equipped"),
 	EWS_Dropped UMETA(DisplayName = "Dropped"),
 
-	EWS_MAX UMETA(DisplayName = "DefaultMAX"),
+	EWS_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
 UCLASS()
