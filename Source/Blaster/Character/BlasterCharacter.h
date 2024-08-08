@@ -35,6 +35,7 @@ protected:
 	void CrouchButtonPressed();
 	void AimButtonPressed();
 	void AimButtonReleased();
+	virtual void Jump() override;
 
 	void AimOffset(float DeltaTime);
 	
