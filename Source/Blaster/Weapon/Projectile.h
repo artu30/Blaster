@@ -6,6 +6,7 @@
 
 class UProjectileMovementComponent;
 class UBoxComponent;
+class UParticleSystem;
 
 UCLASS()
 class BLASTER_API AProjectile : public AActor
@@ -25,5 +26,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* Tracer;
+
+	UPROPERTY()
+	UParticleSystemComponent* TracerComponent;
 
 };
