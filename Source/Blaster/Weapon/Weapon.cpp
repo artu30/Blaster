@@ -116,6 +116,10 @@ void AWeapon::Fire(const FVector& HitTarget)
 		if (AmmoEjectSocket)
 		{
 			FTransform AmmoEjectSocketTransform = AmmoEjectSocket->GetSocketTransform(WeaponMesh);
+			FRotator AmmoEjectSocketRotation(
+				AmmoEjectSocketTransform.GetRotation().Rotator().Pitch,
+				AmmoEjectSocketTransform.GetRotation().Rotator().Yaw + FMath::FRandRange(-15.f, 15.f),
+				AmmoEjectSocketTransform.GetRotation().Rotator().Roll + FMath::FRandRange(-15.f, 15.f));
 			
 			UWorld* World = GetWorld();
 			if (World)
@@ -123,7 +127,7 @@ void AWeapon::Fire(const FVector& HitTarget)
 				World->SpawnActor<ACasing>(
 					CasingClass,
 					AmmoEjectSocketTransform.GetLocation(),
-					AmmoEjectSocketTransform.GetRotation().Rotator());
+					AmmoEjectSocketRotation);
 			}
 		}
 	}
