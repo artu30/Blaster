@@ -52,6 +52,8 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::SetAiming(bool bIsAiming)
 {
+	if (!Character || !EquippedWeapon) return;
+	
 	bAiming = bIsAiming;
 	ServerSetAiming(bIsAiming);
 	if (Character)
@@ -73,6 +75,7 @@ void UCombatComponent::OnRep_EquippedWeapon()
 {
 	if (EquippedWeapon && Character)
 	{
+		EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
 		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 		Character->bUseControllerRotationYaw = true;
 	}
@@ -84,9 +87,7 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 
 	if (bFireButtonPressed)
 	{
-		FHitResult HitResult;
-		TraceUnderCrosshairs(HitResult);
-		ServerFire(HitResult.ImpactPoint);
+		ServerFire(HitTarget);
 
 		if (EquippedWeapon)
 		{

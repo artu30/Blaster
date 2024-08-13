@@ -39,6 +39,7 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	AOPitch = BlasterCharacter->GetAOPitch();
 	EquippedWeapon = BlasterCharacter->GetEquippedWeapon();
 	TurningInPlace = BlasterCharacter->GetTurningInPlace();
+	bLocallyControlled = false;
 
 	// Offset Yaw for strafing
 	FRotator AimRotation = BlasterCharacter->GetBaseAimRotation();
