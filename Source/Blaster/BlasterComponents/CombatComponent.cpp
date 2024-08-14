@@ -211,14 +211,24 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 				CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.f, DeltaTime, 30.f);
 			}
 
+			if (HUDPackage.CrosshairsColor == FLinearColor::Red)
+			{
+				CrosshairAimToTargetFactor = FMath::FInterpTo(CrosshairAimToTargetFactor, 0.25f, DeltaTime, 30.f);
+			}
+			else
+			{
+				CrosshairAimToTargetFactor = FMath::FInterpTo(CrosshairAimToTargetFactor, 0.f, DeltaTime, 30.f);
+			}
+
 			CrosshairShootingFactor = FMath::FInterpTo(CrosshairShootingFactor, 0.f, DeltaTime, 40.f);
 			
 			HUDPackage.CrosshairSpread =
-				0.5f +
+				0.75f +
 				CrosshairVelocityFactor +
 				CrosshairInAirFactor -
 				CrosshairAimFactor +
-				CrosshairShootingFactor;
+				CrosshairShootingFactor -
+				CrosshairAimToTargetFactor;
 			
 			HUD->SetHUDPackage(HUDPackage);
 		}
