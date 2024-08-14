@@ -16,7 +16,6 @@ class BLASTER_API AProjectile : public AActor
 	
 public:	
 	AProjectile();
-	virtual void Destroyed() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -24,6 +23,9 @@ protected:
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnProjectileHit(bool bImpactedOnCharacter);
+	
 private:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* CollisionBox;
@@ -38,7 +40,10 @@ private:
 	UParticleSystemComponent* TracerComponent;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* ImpactParticles;
+	UParticleSystem* ImpactParticlesCharacter;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ImpactParticlesSurface;
 
 	UPROPERTY(EditAnywhere)
 	USoundCue* ImpactSound;

@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystem.h"
 #include "Sound/SoundCue.h"
 
@@ -51,27 +52,36 @@ void AProjectile::BeginPlay()
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
+	bool bImpactedOnCharacter = false;
+	
 	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
 	if (BlasterCharacter)
 	{
+		bImpactedOnCharacter = true;
 		BlasterCharacter->MulticastHit();
 	}
 	
-	Destroy();
+	MulticastOnProjectileHit(bImpactedOnCharacter);
 }
 
-void AProjectile::Destroyed()
+void AProjectile::MulticastOnProjectileHit_Implementation(bool bImpactedOnCharacter)
 {
-	Super::Destroyed();
-
-	if (ImpactParticles)
+	if (ImpactParticlesCharacter && bImpactedOnCharacter)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorTransform());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticlesCharacter, GetActorTransform());
+	}
+	else if (ImpactParticlesSurface)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticlesSurface, GetActorTransform());
 	}
 
 	if (ImpactSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
 	}
-}
 
+	if (HasAuthority())
+	{
+		Destroy();
+	}
+}
