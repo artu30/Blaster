@@ -13,6 +13,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UWidgetComponent;
 class UAnimMontage;
+class AController;
 
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter, public IInteractWithCrosshairsInterface
@@ -21,16 +22,13 @@ class BLASTER_API ABlasterCharacter : public ACharacter, public IInteractWithCro
 
 public:
 	ABlasterCharacter();
-
+	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 
 	void PlayFireMontage(bool bAiming);
-	
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastHit();
 
 	virtual void OnRep_ReplicatedMovement() override;
 	
@@ -53,6 +51,11 @@ protected:
 
 	void AimOffset(float DeltaTime);
 	void SimProxiesTurn();
+
+	UFUNCTION()
+	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser);
+
+	void UpdateHUDHealth();
 	
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
