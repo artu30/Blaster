@@ -18,6 +18,8 @@ ABlasterCharacter::ABlasterCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetMesh());
 	CameraBoom->TargetArmLength = 600.f;
@@ -121,7 +123,24 @@ void ABlasterCharacter::OnRep_ReplicatedMovement()
 
 void ABlasterCharacter::Elim()
 {
+	MulticastElim();
+	GetWorldTimerManager().SetTimer(ElimTimer, this, &ABlasterCharacter::ElimTimerFinished, ElimDelay);
+}
+
+void ABlasterCharacter::MulticastElim_Implementation()
+{
+	bElimmed = true;
 	
+	PlayElimMontage();
+}
+
+void ABlasterCharacter::ElimTimerFinished()
+{
+	ABlasterGameMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>();
+	if (BlasterGameMode)
+	{
+		BlasterGameMode->RequestRespawn(this, Controller);
+	}
 }
 
 void ABlasterCharacter::PlayFireMontage(bool bAiming)
@@ -137,6 +156,15 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
 		AnimInstance->Montage_Play(FireWeaponMontage);
 		FName SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
 		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+void ABlasterCharacter::PlayElimMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ElimMontage)
+	{
+		AnimInstance->Montage_Play(ElimMontage);
 	}
 }
 

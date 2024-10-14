@@ -29,10 +29,15 @@ public:
 	virtual void PostInitializeComponents() override;
 
 	void PlayFireMontage(bool bAiming);
+	
+	void PlayElimMontage();
 
 	virtual void OnRep_ReplicatedMovement() override;
 
 	void Elim();
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastElim();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -96,6 +101,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* HitReactMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UAnimMontage* ElimMontage;
+	
 	void PlayHitReactMontage();
 	
 	void HideCameraIfCharacterClose();
@@ -110,6 +118,13 @@ private:
 	float ProxyYAW;
 	float TimeSinceLastMovementReplication;
 
+	FTimerHandle ElimTimer;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ElimDelay = 3.f;
+	
+	void ElimTimerFinished();
+
 	/**
 	 * Player health
 	 */
@@ -118,6 +133,8 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_Health, VisibleAnywhere, Category = "Player Stats")
 	float Health = 100.f;
+
+	bool bElimmed = false;
 
 	UFUNCTION()
 	void OnRep_Health();
@@ -140,4 +157,5 @@ public:
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
 
+	FORCEINLINE bool IsElimmed() const { return bElimmed; }
 };
